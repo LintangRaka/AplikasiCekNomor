@@ -1,11 +1,11 @@
 
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Acer
@@ -17,7 +17,7 @@ public class CekNomorFrame extends javax.swing.JFrame {
      */
     public CekNomorFrame() {
         initComponents();
-        
+        tambahFocusListener();
         batasiInputHanyaAngka();
     }
 
@@ -83,42 +83,85 @@ public class CekNomorFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void batasiInputHanyaAngka() {
-    jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-        @Override
-        public void keyTyped(java.awt.event.KeyEvent evt) {
-            // Mendapatkan karakter yang diketik
-            char c = evt.getKeyChar();
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                // Mendapatkan karakter yang diketik
+                char c = evt.getKeyChar();
 
-            // Memeriksa apakah karakter bukan angka dan bukan tombol kontrol
-            if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
-                // Jika bukan angka, batalkan event
-                evt.consume();
+                // Memeriksa apakah karakter bukan angka dan bukan tombol kontrol
+                if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+                    // Jika bukan angka, batalkan event
+                    evt.consume();
+                }
             }
-        }
-    });
-}
+        });
+    }
 
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             // Membaca input dari jTextField
             int angka = Integer.parseInt(jTextField1.getText());
 
-            // Menentukan apakah angka genap atau ganjil
-            String hasil;
+            // Cek apakah angka genap atau ganjil
+            String genapGanjil;
             if (angka % 2 == 0) {
-                hasil = "Genap";
+                genapGanjil = "Genap";
             } else {
-                hasil = "Ganjil";
+                genapGanjil = "Ganjil";
+            }
+
+            // Cek apakah angka bilangan prima
+            String prima;
+            if (angka <= 1) {
+                prima = "Bukan bilangan prima";
+            } else {
+                boolean isPrima = true;
+                for (int i = 2; i <= Math.sqrt(angka); i++) {
+                    if (angka % i == 0) {
+                        isPrima = false;
+                        break;
+                    }
+                }
+                prima = isPrima ? "Bilangan prima" : "Bukan bilangan prima";
             }
 
             // Menampilkan hasil di jTextArea
-            jTextArea1.setText("Angka " + angka + " adalah " + hasil + ".");
+            jTextArea1.setText("Angka " + angka + " adalah " + genapGanjil + " dan " + prima + ".");
+
+            // Menampilkan hasil di JOptionPane
+            String message = "Angka " + angka + " adalah " + genapGanjil + " dan " + prima + ".";
+            JOptionPane.showMessageDialog(this, message, "Hasil Cek Angka", JOptionPane.INFORMATION_MESSAGE);
+
         } catch (NumberFormatException e) {
             // Menangani input yang bukan angka
             jTextArea1.setText("Input bukan angka. Silakan masukkan angka yang valid.");
+
+            // Menangani input yang bukan angka
+            JOptionPane.showMessageDialog(this, "Input bukan angka. Silakan masukkan angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+    private void tambahFocusListener() {
+        jTextField1.addFocusListener(new java.awt.event.FocusListener() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                // Menghapus teks saat mendapatkan fokus
+                if (jTextField1.getText().equals("Masukkan angka")) {
+                    jTextField1.setText("");  // Menghapus teks placeholder
+                }
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                // Menambahkan teks placeholder kembali jika kosong
+                if (jTextField1.getText().isEmpty()) {
+                    jTextField1.setText("Masukkan angka");
+                }
+            }
+        });
+    }
 
     /**
      * @param args the command line arguments
